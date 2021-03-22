@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="lista-telefonica">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Telefonica</title>
+    
+    <link rel="stylesheet" type="text/css" href="bootstrap/bootstrap.css">
+    <script src="angular/angular.js"></script>
+
+    <script>
+        angular.module("lista-telefonica", []);
+        angular.module("lista-telefonica").controller("controller-lista-telefonica", function($scope){
+            $scope.app = "Lista Telefonica";
+            $scope.contatos = [];
+
+            $scope.operadoras = [
+                {nome: "Oi", codigo: 14},
+                {nome: "Vivo", codigo: 15},
+                {nome: "Tim", codigo: 41},
+            ];
+
+            $scope.adcContato = function(contato){
+                $scope.contatos.push(angular.copy(contato));
+                delete $scope.contato;
+            }
+
+            $scope.classe = "selecionado";
+
+            $scope.apagarContato = function(contatos){
+               $scope.contatos = contatos.filter(function(contato){
+                    if(!contato.selecionado) return contato;
+                });
+            }
+
+            $scope.isContatoSelecionado = function(contatos){
+                return contatos.some(function(contato){
+                    return contato.selecionado;
+                });
+                console.log(isContatoSelecionado);
+            }
+        });
+    </script>
+
+    <style>
+
+        .jumbotron{
+            width: 400px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .table{
+            margin-top: 20px;
+        }
+        .form-control{
+            margin-bottom: 5px;
+        }
+        .selecionado{
+            background-color: rgb(245, 160, 160);
+        }
+
+
+
+    </style>
+
+</head>
+<body ng-controller="controller-lista-telefonica">
+
+    <div class="jumbotron">
+        <!-- <h4 ng-bind="app"></h4> -->
+        <h3> {{app}} </h3>
+        <!-- {{contatos}} -->
+        <table class="table table-striped" ng-show="contatos.length > 0">
+            <tr>
+                <th></th>
+                <th>Nome</th>
+                <th>Telefone</th>
+                <th>Operadora</th>
+            </tr>
+            <tr ng-class="{selecionado: contato.selecionado}" ng-repeat="contato in contatos">
+                <td>
+                    <input type="checkbox" ng-model="contato.selecionado" />
+                </td>
+                <td>{{contato.nome}}</td>
+                <td>{{contato.telefone}}</td>
+                <td>{{contato.operadora.nome}}</td>
+            </tr>
+        </table>
+        <hr />
+        <input class="form-control" type="text" ng-model="contato.nome" placeholder="Nome" />
+        <input class="form-control" type="text" ng-model="contato.telefone" placeholder="Telefone" />
+
+        <select ng-model="contato.operadora" 
+        class="form-control"
+        ng-options="operadora.nome for operadora in operadoras">
+            <option value="">Selecione uma operadora</option>
+        </select>
+
+        <button class="btn btn-primary btn-block" 
+        ng-click="adcContato(contato);" 
+        ng-disabled="!contato.nome || !contato.telefone">Adicionar Contato</button>
+
+        <button class="btn btn-danger btn-block" 
+        ng-click="apagarContato(contatos);" 
+        ng-if="isContatoSelecionado(contatos);" >Apagar Contato</button>
+    </div>
+    
+</body>
+</html>
